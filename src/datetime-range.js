@@ -16,6 +16,8 @@ angular.module('g1b.datetime-range', ['g1b.scroll-events']).
       onChangeEnd: '&?',
       onClose: '&?',
       closeText: '@',
+      clearText: '@',
+      allowClear: '=?'
     },
     replace: true,
     templateUrl: './datetime-range.html',
@@ -49,7 +51,7 @@ angular.module('g1b.datetime-range', ['g1b.scroll-events']).
             var firstWeekDay = (firstOfMonth.weekday() - firstDayOfWeek + 7) % 7;
 
             return Math.ceil((firstWeekDay + scope.calendar.daysInMonth()) / 7);
-          }
+          };
 
           // Set selected date
           scope.selectDate = function (date) {
@@ -150,7 +152,7 @@ angular.module('g1b.datetime-range', ['g1b.scroll-events']).
             if ( !!scope.onClose ) {
               scope.onClose();
             }
-          }
+          };
 
           // Bind click events outside directive to close edit popover
           $document.on('mousedown', function (e) {
