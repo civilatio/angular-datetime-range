@@ -66,8 +66,8 @@ angular.module('myApp', [
 | on-change-end | Handler function that is fired on change of end datetime object | none | no |
 | on-close | Handler function that is fired on close of the edit popover | none | no |
 | close-text | Close text shown in the button used to close edit popover | Close | no |
-| infiniteStart | Allows an infinite start date | true | no |
-| infiniteEnd | Allows an infinite end date | true | no |
+| infinite-start | Allows an infinite start date | true | no |
+| infinite-end | Allows an infinite end date | true | no |
 
 ## Presets
 
