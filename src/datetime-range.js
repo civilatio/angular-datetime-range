@@ -17,7 +17,9 @@ angular.module('g1b.datetime-range', ['g1b.scroll-events']).
       onClose: '&?',
       closeText: '@',
       clearText: '@',
-      allowClear: '=?'
+      allowClear: '=?',
+      infiniteStart: '<',
+      infiniteEnd: '<'
     },
     replace: true,
     templateUrl: './datetime-range.html',
@@ -25,6 +27,11 @@ angular.module('g1b.datetime-range', ['g1b.scroll-events']).
       return {
         pre: function preLink() {},
         post: function postLink(scope, element) {
+
+          // Set default values
+          if (!scope.infiniteStart) scope.infiniteStart = true;
+          if (!scope.infiniteEnd) scope.infiniteEnd = true;
+          if (!scope.allowClear) scope.allowClear = true;
 
           // Get current date
           scope.current = moment();
@@ -55,13 +62,13 @@ angular.module('g1b.datetime-range', ['g1b.scroll-events']).
 
           // Set selected date
           scope.selectDate = function (date) {
-            if ( scope.selected === date ) {
-              scope.selected = undefined;
+            if (date === 'start') {
+              scope.calendar = scope.start ? scope.start.clone() : moment();
             } else {
-              scope.selected = date;
-              scope.calendar = scope.selected.clone();
-              scope.presetsActive = false;
+              scope.calendar = scope.end ? scope.end.clone() : moment();
             }
+            scope.selected = date;
+            scope.presetsActive = false;
           };
 
           // Check if date is within bounds of min and max allowed date
@@ -70,26 +77,41 @@ angular.module('g1b.datetime-range', ['g1b.scroll-events']).
           };
 
           // Update selected date
-          scope.setDate = function (date, calendar_update) {
-            if ( scope.selected.isSame(date) || !scope.isWithinBounds(date) ) { return; }
-            if ( ( scope.selected === scope.start && date < scope.end ) || ( scope.selected === scope.end && date > scope.start ) ) {
-              scope.selected.year(date.year()).month(date.month()).date(date.date()).hours(date.hours()).minutes(date.minutes()).seconds(date.seconds());
-              if ( (scope.selected.clone().startOf('week').month() !== scope.calendar.month() && scope.selected.clone().endOf('week').month() !== scope.calendar.month()) || calendar_update ) {
-                scope.calendar = scope.selected.clone();
-              }
-              if ( scope.selected === scope.start ) {
+          scope.setDate = function (date) {
+            if ( !scope.isWithinBounds(date) ) {
+              return;
+            }
+
+            if ( ( !scope.start || !scope.end ) ||
+              ( scope.selected === 'start' && date.isBefore(scope.end) ) || ( scope.selected === 'end' && date.isAfter(scope.start) ) ) {
+
+              scope.calendar = date.clone();
+
+              if (scope.selected === 'start') {
+                scope.start = scope.calendar.clone();
                 scope.callbackStart();
-              }
-              if ( scope.selected === scope.end ) {
+              } else {
+                scope.end = scope.calendar.clone();
                 scope.callbackEnd();
               }
+
               scope.callbackAll();
             } else {
-              scope.warning = ( scope.selected === scope.start ) ? 'end' : 'start';
+              scope.warning = scope.selected === 'start' ? 'end' : 'start';
               $timeout(function () {
                 scope.warning = undefined;
               }, 250);
             }
+          };
+
+          scope.clear = function() {
+           if (scope.selected === 'start') {
+             if (!scope.infiniteStart) return;
+             scope.start = undefined;
+           } else {
+             if (!scope.infiniteEnd) return;
+             scope.end = undefined;
+           }
           };
 
           // Set start and end datetime objects to the selected preset
