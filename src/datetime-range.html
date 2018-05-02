@@ -86,7 +86,7 @@
         <div class="arrow arrow-down" ng-click="setDate(calendar.clone().subtract(1, 'seconds'))"></div>
       </div>
     </div>
-    <div class="clear-button" ng-if="allowClear">
+    <div class="clear-button" ng-show="selected === 'start' ? infiniteStart : infiniteEnd">
       <div ng-click="clear()" ng-bind="clearText || 'Clear'"></div>
     </div>
     <div class="close-button">

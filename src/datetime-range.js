@@ -17,7 +17,6 @@ angular.module('g1b.datetime-range', ['g1b.scroll-events']).
       onClose: '&?',
       closeText: '@',
       clearText: '@',
-      allowClear: '=?',
       infiniteStart: '<',
       infiniteEnd: '<'
     },
@@ -29,9 +28,9 @@ angular.module('g1b.datetime-range', ['g1b.scroll-events']).
         post: function postLink(scope, element) {
 
           // Set default values
-          if (!scope.infiniteStart) scope.infiniteStart = true;
-          if (!scope.infiniteEnd) scope.infiniteEnd = true;
-          if (!scope.allowClear) scope.allowClear = true;
+          if (typeof scope.infiniteStart === 'undefined') scope.infiniteStart = true;
+          if (typeof scope.infiniteEnd === 'undefined') scope.infiniteEnd = true;
+          if (typeof scope.allowClear === 'undefined') scope.allowClear = true;
 
           // Get current date
           scope.current = moment();
